@@ -77,7 +77,6 @@ router.post('/',
                 res.status(200).send({token});
             }
             )
-
         // return res.status(200).send('User Registered');
         } catch(err){
         console.log(err);
