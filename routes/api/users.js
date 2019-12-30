@@ -75,10 +75,7 @@ router.post('/',
             (err, token)=>{
                 if(err) throw err;
                 res.status(200).send({token});
-            }
-            )
-
-        // return res.status(200).send('User Registered');
+            })
         } catch(err){
         console.log(err);
         return res.status(500).send('Server Error');
