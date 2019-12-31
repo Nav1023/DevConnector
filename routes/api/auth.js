@@ -15,7 +15,7 @@ router.get('/', auth, async (req, res) => {
         const user = await User.findById(req.user.id).select('-password');
         res.status(200).send(user); 
     }catch(error){
-        console.log(error);
+        console.error(error);
         res.status(500).send('Server error');
     }
 });
@@ -67,7 +67,7 @@ router.post('/',
                 res.status(200).send({token});
             });
         } catch(err){
-        console.log(err);
+        console.error(err);
         return res.status(500).send('Server Error');
         }
     });
