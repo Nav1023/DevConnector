@@ -118,7 +118,6 @@ router.get('/user/:userId', async (req, res) =>{
         .populate('user', ['name', 'avatar']);
 
         if(!profile) return res.status(400).send({ msg: 'Profile not found' });
-
         res.status(200).send(profile);
     } catch (err) {
         console.error(err);
@@ -128,5 +127,81 @@ router.get('/user/:userId', async (req, res) =>{
         res.status(500).send('Server Error');
     }
 }); 
+
+// @route  DELETE  api/profile/
+// @desc   Delete the profile, user & posts
+// @acess  Private
+router.delete('/', auth, async (req, res) =>{
+    try {
+        // @todo - remove user posts
+
+       //Remove Profile
+       await Profile.findOneAndRemove({ user: req.user.id});
+       //Remove User
+       await User.findOneAndRemove({ _id: req.user.id});
+       res.status(200).send({msg: 'User deleted'});
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+}); 
+
+// @route  PUT  api/profile/experience
+// @desc   Add profile experience
+// @acess  Private
+router.put('/experience', 
+    [
+        auth,
+        [
+            check('title', 'Title is required')
+            .not()
+            .isEmpty(),
+            check('company', 'Company is required')
+            .not()
+            .isEmpty(),
+            check('from', 'From date is required')
+            .not()
+            .isEmpty(),
+        ]
+    ],
+    async (req, res) => {
+
+        const errors = validationResult(req);
+        if(!errors){
+            return res.status(400).send({ errors: errors });
+        }
+        const {
+            title,
+            company,
+            location,
+            to,
+            from,
+            current,
+            description
+        } = req.body;
+
+        const newExp = {
+            title,
+            company,
+            location,
+            from,
+            to,
+            current,
+            description
+        };
+
+        try {
+            const profile = await Profile.findOne({ user:req.user.id });
+
+            profile.experience.unshift(newExp);
+            await profile.save();
+            res.status(200).send(profile);
+
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Server Error');
+        }
+
+});
 
 module.exports = router;
