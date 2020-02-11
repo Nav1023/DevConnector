@@ -18,7 +18,7 @@ router.get('/test', (req, res) => res.send('User Route'));
 // @acess  Public 
 router.post('/',
     [ 
-        check('name', 'Name is require')
+        check('name', 'Name is required')
         .not()
         .isEmpty(),
         check('email', 'Please Include a valid Email')
