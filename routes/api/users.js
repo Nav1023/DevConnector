@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const  { check, validationResult } = require('express-validator');
+const { errorsCheck } = require('../utils/helper');
 
 const User = require('../../models/User');
 
@@ -18,7 +19,7 @@ router.get('/test', (req, res) => res.send('User Route'));
 // @acess  Public 
 router.post('/',
     [ 
-        check('name', 'Name is require')
+        check('name', 'Name is required')
         .not()
         .isEmpty(),
         check('email', 'Please Include a valid Email')
@@ -27,9 +28,12 @@ router.post('/',
         .isLength({min : 6}),
     ],
     async (req, res) =>{ 
-        const errors  = validationResult(req);
-        if(!errors.isEmpty()){
-            return res.status(400).send({ errors : errors});
+        const validation = errorsCheck(req);
+        if(validation.type){
+        return res.status(400).send({
+            type: 'error',
+            message: validation.msg
+        });
         }
         const {
             name,
