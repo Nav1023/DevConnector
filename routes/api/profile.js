@@ -6,6 +6,7 @@ const auth = require('../../middleware/auth');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 const {check, validationResult } =  require('express-validator');
+const { errorsCheck } = require('../utils/helper');
 
 // @route  GET api/profile/me
 // @desc   Get current users profile
@@ -35,9 +36,12 @@ router.post('/',  [
         check('skills', 'Skills is Required').not().isEmpty()
     ]
     ], async(req, res) => {
-        const errors = validationResult(req);
-        if(!errors.isEmpty()){
-            return res.status(400).send({ errors: errors})
+        const validation = errorsCheck(req);
+        if(validation.type){
+        return res.status(400).send({
+            type: 'error',
+            message: validation.msg
+        });
         }
 
         const{
@@ -167,9 +171,12 @@ router.put('/experience',
         ]
     ],
     async (req, res) => {
-        const errors = validationResult(req);
-        if(!errors){
-            return res.status(400).send({ errors: errors });
+        const validation = errorsCheck(req);
+        if(validation.type){
+        return res.status(400).send({
+            type: 'error',
+            message: validation.msg
+        });
         }
         const {
             title,
@@ -251,9 +258,12 @@ router.put('/education',
         ]
     ],
     async (req, res) => {
-        const errors = validationResult(req);
-        if(!errors){
-            return res.status(400).send({ errors: errors });
+        const validation = errorsCheck(req);
+        if(validation.type){
+        return res.status(400).send({
+            type: 'error',
+            message: validation.msg
+        });
         }
         const {
             school,

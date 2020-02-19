@@ -5,7 +5,7 @@ module.exports = function(req, res, next){
     //Get the token from headers
     const token = req.header('x-auth-token');
     if(!token){
-        return res.status(401).send({msg: 'No Token, authorization failed'});
+        return res.status(401).send({message: 'No Token, authorization failed'});
     }
     //Verify Token
     try{
@@ -14,7 +14,7 @@ module.exports = function(req, res, next){
         next();
 
     }catch(error){
-        res.status(401).send({msg: "Token is invalid"});
+        res.status(401).send({message: "Token is invalid"});
     }
 
 }

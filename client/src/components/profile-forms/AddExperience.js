@@ -12,7 +12,7 @@ const AddExperience = ({ addExperience , history }) => {
         location: '',
         from: '',
         to: '',
-        current: '',
+        current: false,
         description: ''
     });
 

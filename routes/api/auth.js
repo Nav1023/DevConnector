@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const  { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const { errorsCheck } = require('../utils/helper');
 
 // @route  GET api/auth
 // @desc   Test route
@@ -32,9 +33,12 @@ router.post('/',
         .exists(),
     ],
     async (req, res) =>{ 
-        const errors  = validationResult(req);
-        if(!errors.isEmpty()){
-            return res.status(400).json({ errors : errors});
+        const validation = errorsCheck(req);
+        if(validation.type){
+        return res.status(400).send({
+            type: 'error',
+            message: validation.msg
+        });
         }
         const {
             password,
@@ -46,11 +50,11 @@ router.post('/',
         //See if the user exists
         let user =  await User.findOne({ email });
         if(!user){
-            return res.status(400).json({ errors : [ { msg : 'Invalid credentials' }]});
+            return res.status(400).json({ type: 'error', message: 'Invalid credentials'});
         }
         const isMatch = await bcrypt.compare(password, user.password); 
         if(!isMatch){
-            return res.status(400).json({ errors : [ { msg : 'Invalid credentials' }]});
+            return res.status(400).json({ type: 'error', message: 'Invalid credentials'});
         }
         //Return JWT
         const payload = {

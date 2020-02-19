@@ -5,6 +5,7 @@ const {check, validationResult } =  require('express-validator');
 const Post = require('../../models/Post');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
+const { errorsCheck } = require('../utils/helper');
 
 // @route  POST api/posts/create
 // @desc   Create Posts route
@@ -15,9 +16,12 @@ router.post('/create', [
         check('text', 'Text is required').not().isEmpty()
     ]
 ], async (req, res) => {
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).send({ errors: errors});
+    const validation = errorsCheck(req);
+    if(validation.type){
+    return res.status(400).send({
+        type: 'error',
+        message: validation.msg
+    });
     }
     try {
     const user = await User.findById(req.user.id).select('-password');
@@ -158,9 +162,12 @@ router.post('/comment/:id', [
         check('text', 'Text is required').not().isEmpty()
     ]
 ], async (req, res) => {
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).send({ errors: errors});
+    const validation = errorsCheck(req);
+    if(validation.type){
+    return res.status(400).send({
+        type: 'error',
+        message: validation.msg
+    });
     }
     
     try {
