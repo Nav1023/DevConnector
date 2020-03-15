@@ -7,10 +7,10 @@ const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 const { errorsCheck } = require('../utils/helper');
 
-// @route  POST api/posts/create
+// @route  POST api/posts
 // @desc   Create Posts route
 // @acess  Private 
-router.post('/create', [
+router.post('/', [
     auth,
     [
         check('text', 'Text is required').not().isEmpty()
