@@ -1,5 +1,5 @@
 # DevConnector
-This Project is based on MERN development.
+This Project is based on MERN Stack.
 
 Used Heroku to host it
 Here is the link you can take a look at this website.
